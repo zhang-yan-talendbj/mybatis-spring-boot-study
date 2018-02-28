@@ -15,7 +15,13 @@
  */
 package org.apache.ibatis.reflection;
 
-import static org.junit.Assert.*;
+import org.apache.ibatis.reflection.typeparam.Calculator;
+import org.apache.ibatis.reflection.typeparam.Calculator.SubCalculator;
+import org.apache.ibatis.reflection.typeparam.Level0Mapper;
+import org.apache.ibatis.reflection.typeparam.Level0Mapper.Level0InnerMapper;
+import org.apache.ibatis.reflection.typeparam.Level1Mapper;
+import org.apache.ibatis.reflection.typeparam.Level2Mapper;
+import org.junit.Test;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.GenericArrayType;
@@ -27,13 +33,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.ibatis.reflection.typeparam.Calculator;
-import org.apache.ibatis.reflection.typeparam.Calculator.SubCalculator;
-import org.apache.ibatis.reflection.typeparam.Level0Mapper;
-import org.apache.ibatis.reflection.typeparam.Level0Mapper.Level0InnerMapper;
-import org.apache.ibatis.reflection.typeparam.Level1Mapper;
-import org.apache.ibatis.reflection.typeparam.Level2Mapper;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class TypeParameterResolverTest {
   @Test
@@ -70,6 +71,7 @@ public class TypeParameterResolverTest {
 
   @Test
   public void testReturn_SimpleList() throws Exception {
+    //List<Double> simpleSelectList();
     Class<?> clazz = Level1Mapper.class;
     Method method = clazz.getMethod("simpleSelectList");
     Type result = TypeParameterResolver.resolveReturnType(method, clazz);
@@ -83,6 +85,8 @@ public class TypeParameterResolverTest {
   @Test
   public void testReturn_SimpleMap() throws Exception {
     Class<?> clazz = Level1Mapper.class;
+
+    //Map<Integer, Double> simpleSelectMap();
     Method method = clazz.getMethod("simpleSelectMap");
     Type result = TypeParameterResolver.resolveReturnType(method, clazz);
     assertTrue(result instanceof ParameterizedType);
@@ -96,6 +100,7 @@ public class TypeParameterResolverTest {
   @Test
   public void testReturn_SimpleWildcard() throws Exception {
     Class<?> clazz = Level1Mapper.class;
+    //List<? extends String> simpleSelectWildcard();
     Method method = clazz.getMethod("simpleSelectWildcard");
     Type result = TypeParameterResolver.resolveReturnType(method, clazz);
     assertTrue(result instanceof ParameterizedType);
@@ -110,6 +115,7 @@ public class TypeParameterResolverTest {
   @Test
   public void testReturn_SimpleArray() throws Exception {
     Class<?> clazz = Level1Mapper.class;
+    //String[] simpleSelectArray();
     Method method = clazz.getMethod("simpleSelectArray");
     Type result = TypeParameterResolver.resolveReturnType(method, clazz);
     assertTrue(result instanceof Class);
@@ -121,6 +127,7 @@ public class TypeParameterResolverTest {
   @Test
   public void testReturn_SimpleArrayOfArray() throws Exception {
     Class<?> clazz = Level1Mapper.class;
+    //String[][] simpleSelectArrayOfArray();
     Method method = clazz.getMethod("simpleSelectArrayOfArray");
     Type result = TypeParameterResolver.resolveReturnType(method, clazz);
     assertTrue(result instanceof Class);
@@ -133,6 +140,7 @@ public class TypeParameterResolverTest {
   @Test
   public void testReturn_SimpleTypeVar() throws Exception {
     Class<?> clazz = Level1Mapper.class;
+    //<K extends Calculator<?>> K simpleSelectTypeVar();
     Method method = clazz.getMethod("simpleSelectTypeVar");
     Type result = TypeParameterResolver.resolveReturnType(method, clazz);
     assertEquals(Object.class, result);
@@ -149,6 +157,7 @@ public class TypeParameterResolverTest {
   @Test
   public void testReturn_Lv2CustomClass() throws Exception {
     Class<?> clazz = Level2Mapper.class;
+    //Calculator<N> selectCalculator(Calculator<N> param);
     Method method = clazz.getMethod("selectCalculator", Calculator.class);
     Type result = TypeParameterResolver.resolveReturnType(method, clazz);
     assertTrue(result instanceof ParameterizedType);
@@ -161,6 +170,7 @@ public class TypeParameterResolverTest {
   @Test
   public void testReturn_Lv2CustomClassList() throws Exception {
     Class<?> clazz = Level2Mapper.class;
+    //List<Calculator<L>> selectCalculatorList();
     Method method = clazz.getMethod("selectCalculatorList");
     Type result = TypeParameterResolver.resolveReturnType(method, clazz);
     assertTrue(result instanceof ParameterizedType);

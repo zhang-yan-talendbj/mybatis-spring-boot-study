@@ -15,13 +15,14 @@
  */
 package org.apache.ibatis.parsing;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class GenericTokenParserTest {
 
@@ -108,4 +109,13 @@ public class GenericTokenParserTest {
     assertEquals(expected.toString(), parser.parse(input.toString()));
   }
 
+  @Test
+  public void GenericTokenParserParse() throws Exception {
+    //GenericTokenParser.parse()
+    String s = "\\abcdefg";
+    char[] chars = s.toCharArray();
+    int start = s.indexOf("a", 0);
+    assertEquals(start,1);
+    assertTrue(chars[start-1]=='\\');
+  }
 }
